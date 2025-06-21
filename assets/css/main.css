@@ -1,0 +1,174 @@
+/* https://www.realtimecolors.com/dashboard?colors=0f0f0f-fafafa-0101fe-d0d0d7-35d908&fonts=Inter-Inter */
+@import "tailwindcss";
+@import "@nuxt/ui-pro";
+
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --text: #0f0f0f;
+    --background: #fafafa;
+    --primary: #0101fe;
+    --secondary: #d0d0d7;
+    --accent: #35d908;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #f0f0f0;
+    --background: #050505;
+    --primary: #0101fe;
+    --secondary: #28282f;
+    --accent: #54f726;
+  }
+}
+
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --text-50: #f2f2f2;
+    --text-100: #e6e6e6;
+    --text-200: #cccccc;
+    --text-300: #b3b3b3;
+    --text-400: #999999;
+    --text-500: #808080;
+    --text-600: #666666;
+    --text-700: #4d4d4d;
+    --text-800: #333333;
+    --text-900: #1a1a1a;
+    --text-950: #0d0d0d;
+
+    --background-50: #f2f2f2;
+    --background-100: #e6e6e6;
+    --background-200: #cccccc;
+    --background-300: #b3b3b3;
+    --background-400: #999999;
+    --background-500: #808080;
+    --background-600: #666666;
+    --background-700: #4d4d4d;
+    --background-800: #333333;
+    --background-900: #1a1a1a;
+    --background-950: #0d0d0d;
+
+    --primary-50: #e6e6ff;
+    --primary-100: #ccccff;
+    --primary-200: #9a9afe;
+    --primary-300: #6767fe;
+    --primary-400: #3434fe;
+    --primary-500: #0101fe;
+    --primary-600: #0101cb;
+    --primary-700: #010198;
+    --primary-800: #010165;
+    --primary-900: #000033;
+    --primary-950: #000019;
+
+    --secondary-50: #f1f1f3;
+    --secondary-100: #e3e3e8;
+    --secondary-200: #c8c8d0;
+    --secondary-300: #acacb9;
+    --secondary-400: #9191a1;
+    --secondary-500: #75758a;
+    --secondary-600: #5e5e6e;
+    --secondary-700: #464653;
+    --secondary-800: #2f2f37;
+    --secondary-900: #17171c;
+    --secondary-950: #0c0c0e;
+
+    --accent-50: #ecfee6;
+    --accent-100: #d8fdce;
+    --accent-200: #b1fb9d;
+    --accent-300: #8afa6b;
+    --accent-400: #63f83a;
+    --accent-500: #3cf609;
+    --accent-600: #30c507;
+    --accent-700: #249405;
+    --accent-800: #186204;
+    --accent-900: #0c3102;
+    --accent-950: #061901;
+
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-50: #0d0d0d;
+    --text-100: #1a1a1a;
+    --text-200: #333333;
+    --text-300: #4d4d4d;
+    --text-400: #666666;
+    --text-500: #808080;
+    --text-600: #999999;
+    --text-700: #b3b3b3;
+    --text-800: #cccccc;
+    --text-900: #e6e6e6;
+    --text-950: #f2f2f2;
+
+    --background-50: #0d0d0d;
+    --background-100: #1a1a1a;
+    --background-200: #333333;
+    --background-300: #4d4d4d;
+    --background-400: #666666;
+    --background-500: #808080;
+    --background-600: #999999;
+    --background-700: #b3b3b3;
+    --background-800: #cccccc;
+    --background-900: #e6e6e6;
+    --background-950: #f2f2f2;
+
+    --primary-50: #000019;
+    --primary-100: #000033;
+    --primary-200: #010165;
+    --primary-300: #010198;
+    --primary-400: #0101cb;
+    --primary-500: #0101fe;
+    --primary-600: #3434fe;
+    --primary-700: #6767fe;
+    --primary-800: #9a9afe;
+    --primary-900: #ccccff;
+    --primary-950: #e6e6ff;
+
+    --secondary-50: #0c0c0e;
+    --secondary-100: #17171c;
+    --secondary-200: #2f2f37;
+    --secondary-300: #464653;
+    --secondary-400: #5e5e6e;
+    --secondary-500: #75758a;
+    --secondary-600: #9191a1;
+    --secondary-700: #acacb9;
+    --secondary-800: #c8c8d0;
+    --secondary-900: #e3e3e8;
+    --secondary-950: #f1f1f3;
+
+    --accent-50: #061901;
+    --accent-100: #0c3102;
+    --accent-200: #186204;
+    --accent-300: #249405;
+    --accent-400: #30c507;
+    --accent-500: #3cf609;
+    --accent-600: #63f83a;
+    --accent-700: #8afa6b;
+    --accent-800: #b1fb9d;
+    --accent-900: #d8fdce;
+    --accent-950: #ecfee6;
+
+  }
+}
+
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  text-decoration: none;
+  list-style: none;
+}
+
+html {
+  font-size: 16px;
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+body {
+  background-color: var(--background);
+}
