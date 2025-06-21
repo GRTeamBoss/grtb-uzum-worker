@@ -1,8 +1,6 @@
 import { Telegraf } from "telegraf"
 import { initializeApp } from "firebase/app";
 
-process.env["GOOGLE_APPLICATION_CREDENTIALS"] = path.resolve("uzum-webapp-telegram-bot-firebase-adminsdk-fbsvc-fe99baefa1.json")
-
 const firebaseConfig = {
   apiKey: process.env["FIREBASE_APIKEY"],
   authDomain: process.env["FIREBASE_AUTHDOMAIN"],
