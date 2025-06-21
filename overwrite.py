@@ -1,7 +1,7 @@
 import os
 
 def main() -> None:
-  with open("./node_modules/@nuxt/ui-pro/dist/module.mjs", "w+", encoding="utf-8") as file:
+  with open("./node_modules/@nuxt/ui-pro/dist/module.mjs", "wr+", encoding="utf-8") as file:
     content = file.read()
     print(content)
     arr = content.splitlines()
@@ -12,7 +12,7 @@ def main() -> None:
     file.writelines(arr)
 
 
-  with open("./node_modules/@nuxt/ui-pro/dist/unplugin.mjs", "w+", encoding="utf-8") as file:
+  with open("./node_modules/@nuxt/ui-pro/dist/unplugin.mjs", "wr+", encoding="utf-8") as file:
     content = file.read()
     print(content)
     arr = content.splitlines()
