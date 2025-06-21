@@ -1,4 +1,8 @@
+import os
+
 def main() -> None:
+  print(os.listdir("."))
+  print(os.listdir("./node_modules"))
   with open("./node_modules/@nuxt/ui-pro/dist/shared/ui-pro.B6uD94pG.mjs", "w+", encoding="utf-8") as file:
     content = file.read()
     arr = content.splitlines()
