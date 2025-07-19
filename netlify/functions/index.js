@@ -7,6 +7,7 @@ const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN
 
 
 const bot = new Telegraf(TELEGRAM_TOKEN)
+const firebaseAPI = new FirebaseAPI()
 
 bot.start(async ctx => {
   await ctx.reply("Welcome to Uzum Dashboard Bot!\n\n" +
@@ -14,7 +15,7 @@ bot.start(async ctx => {
     "Use /api command to set your API token.")
   await ctx.reply("To get started, please provide your Uzum API token in the format:\n" +
     "`/api your_api_token_here`")
-  await FirebaseAPI().createUser({
+  await firebaseAPI.createUser({
     userId: ctx.message.chat.id,
     username: ctx.message.chat.username || "Unknown",
     firstName: ctx.message.chat.first_name || "Unknown",
@@ -25,7 +26,7 @@ bot.start(async ctx => {
 
 bot.command("api", async ctx => {
   await ctx.reply("Analyzing API token...")
-  await FirebaseAPI().updateUser(ctx.message.chat.id, {
+  await firebaseAPI.updateUser(ctx.message.chat.id, {
     uzumApiToken: ctx.message.text.split(" ")[1] || ""
   })
   await ctx.reply("Saved!")
@@ -35,7 +36,7 @@ bot.command("api", async ctx => {
 
 bot.command("invoice", async ctx => {
   const invoiceId = ctx.message.text.split(" ")[1]
-  const UzumAPIToken = await FirebaseAPI().getUser(ctx.message.chat.id).then(user => user.uzumApiToken)
+  const UzumAPIToken = await firebaseAPI.getUser(ctx.message.chat.id).then(user => user.uzumApiToken)
   if (!UzumAPIToken) {
     await ctx.reply("Please set your Uzum API token using the /api command.")
   } else {
@@ -67,28 +68,32 @@ bot.command("invoice", async ctx => {
 
 bot.command("returned", async ctx => {
   const returnId = ctx.message.text.split(" ")[1]
-  const UzumAPIToken = await FirebaseAPI().getUser(ctx.message.chat.id).then(user => user.uzumApiToken)
-  if (!returnId) {
-    await ctx.reply("Get return only first page. Usage: `/returned all` for all returns or `/returned <return_id>` for specific return.")
-    const returns = await UzumAPI(UzumAPIToken).getReturn()
-    if (!returns || returns.length === 0) {
-      await ctx.reply("No returns found.")
-    } else {
-      await ctx.reply("Returns found:\n" + JSON.stringify(returns, null, 2))
-    }
-  } else if (returnId.toLowerCase() === "all") {
-    const returns = await UzumAPI(UzumAPIToken).getAllReturns()
-    if (!returns || returns.length === 0) {
-      await ctx.reply("No returns found.")
-    } else {
-      await ctx.reply("Returns found:\n" + JSON.stringify(returns, null, 2))
-    }
-  } else if (Number.isInteger(Number(returnId))) {
-    const returned = await UzumAPI(UzumAPIToken).getReturnById(returnId)
-    if (!returned) {
-      await ctx.reply("Return not found.")
-    } else {
-      await ctx.reply("Return details:\n" + JSON.stringify(returned, null, 2))
+  const UzumAPIToken = await firebaseAPI.getUser(ctx.message.chat.id).then(user => user.uzumApiToken)
+  if (!UzumAPIToken) {
+    await ctx.reply("Please set your Uzum API token using the /api command.")
+  } else {
+    if (!returnId) {
+      await ctx.reply("Get return only first page. Usage: `/returned all` for all returns or `/returned <return_id>` for specific return.")
+      const returns = await UzumAPI(UzumAPIToken).getReturn()
+      if (!returns || returns.length === 0) {
+        await ctx.reply("No returns found.")
+      } else {
+        await ctx.reply("Returns found:\n" + JSON.stringify(returns, null, 2))
+      }
+    } else if (returnId.toLowerCase() === "all") {
+      const returns = await UzumAPI(UzumAPIToken).getAllReturns()
+      if (!returns || returns.length === 0) {
+        await ctx.reply("No returns found.")
+      } else {
+        await ctx.reply("Returns found:\n" + JSON.stringify(returns, null, 2))
+      }
+    } else if (Number.isInteger(Number(returnId))) {
+      const returned = await UzumAPI(UzumAPIToken).getReturnById(returnId)
+      if (!returned) {
+        await ctx.reply("Return not found.")
+      } else {
+        await ctx.reply("Return details:\n" + JSON.stringify(returned, null, 2))
+      }
     }
   }
 })
