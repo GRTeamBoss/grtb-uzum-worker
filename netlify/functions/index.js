@@ -16,7 +16,7 @@ bot.start(async ctx => {
   await ctx.reply("To get started, please provide your Uzum API token in the format:\n" +
     "`/api your_api_token_here`")
   await firebaseAPI.createUser({
-    userId: ctx.message.chat.id,
+    userId: ctx.message.chat.id.toString(),
     username: ctx.message.chat.username || "Unknown",
     firstName: ctx.message.chat.first_name || "Unknown",
     lastName: ctx.message.chat.last_name || "Unknown"
@@ -26,7 +26,7 @@ bot.start(async ctx => {
 
 bot.command("api", async ctx => {
   await ctx.reply("Analyzing API token...")
-  await firebaseAPI.updateUser(ctx.message.chat.id, {
+  await firebaseAPI.updateUser(ctx.message.chat.id.toString(), {
     uzumApiToken: ctx.message.text.split(" ")[1] || ""
   })
   await ctx.reply("Saved!")
@@ -36,7 +36,7 @@ bot.command("api", async ctx => {
 
 bot.command("invoice", async ctx => {
   const invoiceId = ctx.message.text.split(" ")[1]
-  const UzumAPIToken = await firebaseAPI.getUser(ctx.message.chat.id).then(user => user.uzumApiToken)
+  const UzumAPIToken = await firebaseAPI.getUser(ctx.message.chat.id.toString()).then(user => user.uzumApiToken)
   if (!UzumAPIToken) {
     await ctx.reply("Please set your Uzum API token using the /api command.")
   } else {
@@ -68,7 +68,7 @@ bot.command("invoice", async ctx => {
 
 bot.command("returned", async ctx => {
   const returnId = ctx.message.text.split(" ")[1]
-  const UzumAPIToken = await firebaseAPI.getUser(ctx.message.chat.id).then(user => user.uzumApiToken)
+  const UzumAPIToken = await firebaseAPI.getUser(ctx.message.chat.id.toString()).then(user => user.uzumApiToken)
   if (!UzumAPIToken) {
     await ctx.reply("Please set your Uzum API token using the /api command.")
   } else {
