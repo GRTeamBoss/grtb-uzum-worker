@@ -42,21 +42,21 @@ bot.command("invoice", async ctx => {
   } else {
     if (!invoiceId) {
       await ctx.reply("Get invoice only first page. Usage: `/invoice all` for all invoices or `/invoice <invoice_id>` for specific invoice.")
-      const invoices = await UzumAPI(UzumAPIToken).getInvoice()
+      const invoices = await new UzumAPI(UzumAPIToken).getInvoice()
       if (!invoices || invoices.length === 0) {
         await ctx.reply("No invoices found.")
       } else {
         await ctx.reply("Invoices found:\n" + JSON.stringify(invoices, null, 2))
       }
     } else if (invoiceId.toLowerCase() === "all") {
-      const invoices = await UzumAPI(UzumAPIToken).getAllInvoices()
+      const invoices = await new UzumAPI(UzumAPIToken).getAllInvoices()
       if (!invoices || invoices.length === 0) {
         await ctx.reply("No invoices found.")
       } else {
         await ctx.reply("Invoices found:\n" + JSON.stringify(invoices, null, 2))
       }
     } else if (Number.isInteger(Number(invoiceId))) {
-      const invoice = await UzumAPI(UzumAPIToken).getInvoiceById(invoiceId)
+      const invoice = await new UzumAPI(UzumAPIToken).getInvoiceById(invoiceId)
       if (!invoice) {
         await ctx.reply("Invoice not found.")
       } else {
@@ -74,21 +74,21 @@ bot.command("returned", async ctx => {
   } else {
     if (!returnId) {
       await ctx.reply("Get return only first page. Usage: `/returned all` for all returns or `/returned <return_id>` for specific return.")
-      const returns = await UzumAPI(UzumAPIToken).getReturn()
+      const returns = await new UzumAPI(UzumAPIToken).getReturn()
       if (!returns || returns.length === 0) {
         await ctx.reply("No returns found.")
       } else {
         await ctx.reply("Returns found:\n" + JSON.stringify(returns, null, 2))
       }
     } else if (returnId.toLowerCase() === "all") {
-      const returns = await UzumAPI(UzumAPIToken).getAllReturns()
+      const returns = await new UzumAPI(UzumAPIToken).getAllReturns()
       if (!returns || returns.length === 0) {
         await ctx.reply("No returns found.")
       } else {
         await ctx.reply("Returns found:\n" + JSON.stringify(returns, null, 2))
       }
     } else if (Number.isInteger(Number(returnId))) {
-      const returned = await UzumAPI(UzumAPIToken).getReturnById(returnId)
+      const returned = await new UzumAPI(UzumAPIToken).getReturnById(returnId)
       if (!returned) {
         await ctx.reply("Return not found.")
       } else {
