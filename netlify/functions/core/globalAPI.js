@@ -35,19 +35,20 @@ export class FirebaseAPI extends API {
   }
 
   async createUser(data) {
-    const docRef = await setDoc(doc(this.firestore, "users", data.userId), data);
+    const userRef = doc(this.firestore, "users", data.userId);
+    const docRef = await setDoc(userRef, data);
     return docRef.id;
   }
 
   async updateUser(userId, data) {
-    const userRef = collection(this.firestore, "users");
-    await updateDoc(userRef, userId, data);
+    const userRef = doc(this.firestore, "users", userId);
+    await updateDoc(userRef, data);
     return true;
   }
 
   async deleteUser(userId) {
-    const userRef = collection(this.firestore, "users");
-    await deleteDoc(userRef, userId);
+    const userRef = doc(this.firestore, "users", userId);
+    await deleteDoc(userRef);
     return true;
   }
 
