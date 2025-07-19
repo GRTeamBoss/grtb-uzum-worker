@@ -1,4 +1,3 @@
-import { th } from "#build/ui-pro/prose";
 import { initializeApp } from "firebase/app"
 import { getFirestore, collection, addDoc, getDoc, updateDoc, deleteDoc, doc, setDoc } from "firebase/firestore"
 
