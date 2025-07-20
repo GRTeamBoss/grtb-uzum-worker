@@ -14,7 +14,21 @@ class API {
       appId: process.env["FIREBASE_APPID"],
       measurementId: process.env["FIREBASE_MEASUREMENTID"]
     };
-    initializeApp({credential: cert(this.firebaseConfig),});
+    this.serviceAccount = {
+      type: process.env["FIREBASE_TYPE"],
+      project_id: process.env["FIREBASE_PROJECT_ID"],
+      private_key_id: process.env["FIREBASE_PRIVATE_KEY_ID"],
+      private_key: process.env["FIREBASE_PRIVATE_KEY"].replace(/\\n/g, "\n"),
+      client_email: process.env["FIREBASE_CLIENT_EMAIL"],
+      client_id: process.env["FIREBASE_CLIENT_ID"],
+      auth_uri: process.env["FIREBASE_AUTH_URI"],
+      token_uri: process.env["FIREBASE_TOKEN_URI"],
+      auth_provider_x509_cert_url: process.env["FIREBASE_AUTH_PROVIDER_CERT_URL"],
+      client_x509_cert_url: process.env["FIREBASE_CLIENT_CERT_URL"],
+      universe_domain: process.env["FIREBASE_UNIVERSE_DOMAIN"]
+    };
+    initializeApp({credential: cert(this.serviceAccount),});
+    // this.app = initializeApp(this.firebaseConfig);
     this.firestore = getFirestore();
   }
 }
@@ -25,8 +39,7 @@ export class FirebaseAPI extends API {
   }
 
   async getUser(userId) {
-    const docRef = collection(this.firestore, "users");
-    const userDoc = await getDoc(docRef, userId);
+    const userDoc = await this.firestore.collection("users").doc(userId).get();
     if (userDoc.exists()) {
       return userDoc.data();
     } else {
@@ -35,20 +48,17 @@ export class FirebaseAPI extends API {
   }
 
   async createUser(data) {
-    const userRef = doc(this.firestore, "users", data.userId);
-    const docRef = await setDoc(userRef, data);
+    const docRef = await this.firestore.collection("users").doc(data.userId).set(data);
     return docRef.id;
   }
 
   async updateUser(userId, data) {
-    const userRef = doc(this.firestore, "users", userId);
-    await updateDoc(userRef, data);
+    const userRef = await this.firestore.collection("users").doc(userId).update(data);
     return true;
   }
 
   async deleteUser(userId) {
-    const userRef = doc(this.firestore, "users", userId);
-    await deleteDoc(userRef);
+    const userRef = await this.firestore.collection("users").doc(userId).delete();
     return true;
   }
 
