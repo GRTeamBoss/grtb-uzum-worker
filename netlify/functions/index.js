@@ -12,16 +12,21 @@ const firebaseAPI = new FirebaseAPI()
 bot.start(async ctx => {
   await ctx.reply("Welcome to Uzum Dashboard Bot!\n\n" +
     "This bot allows you to manage your Uzum API tokens and access the dashboard.\n\n" +
-    "Use /api command to set your API token.")
-  await ctx.reply("To get started, please provide your Uzum API token in the format:\n" +
+    "Use /api command to set your API token.\n" +
+    "To get started, please provide your Uzum API token in the format:\n" +
     "`/api your_api_token_here`")
-  await firebaseAPI.createUser({
+  let createUser = await firebaseAPI.createUser({
     userId: ctx.message.chat.id.toString(),
     username: ctx.message.chat.username || "Unknown",
     firstName: ctx.message.chat.first_name || "Unknown",
-    lastName: ctx.message.chat.last_name || "Unknown"
+    lastName: ctx.message.chat.last_name || "Unknown",
+    uzumApiToken: null
   })
-  await ctx.reply("User created! Now you can use the /api command to set your API token.")
+  if (createUser === ctx.message.chat.id.toString()) {
+    await ctx.reply("User created successfully! Now you can set your API token using the /api command.")
+  } else {
+    await ctx.reply("User already exists! You can set your API token using the /api command.")
+  }
 })
 
 bot.command("api", async ctx => {
