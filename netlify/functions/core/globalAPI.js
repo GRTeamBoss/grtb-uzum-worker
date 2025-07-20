@@ -27,7 +27,7 @@ class API {
       client_x509_cert_url: process.env["FIREBASE_CLIENT_CERT_URL"],
       universe_domain: process.env["FIREBASE_UNIVERSE_DOMAIN"]
     };
-    initializeApp({credential: cert(this.serviceAccount),});
+    initializeApp({credential: cert(this.serviceAccount)}, appName="uzum-webapp-telegram-bot");
     // this.app = initializeApp(this.firebaseConfig);
     this.firestore = getFirestore();
   }
