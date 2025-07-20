@@ -1,5 +1,5 @@
-import { initializeApp } from "firebase/app"
-import { getFirestore, collection, addDoc, getDoc, updateDoc, deleteDoc, doc, setDoc } from "firebase/firestore"
+import { initializeApp, cert } from "firebase-admin/app"
+import { getFirestore, collection, addDoc, getDoc, updateDoc, deleteDoc, doc, setDoc } from "firebase-admin/firestore"
 
 
 class API {
@@ -14,8 +14,8 @@ class API {
       appId: process.env["FIREBASE_APPID"],
       measurementId: process.env["FIREBASE_MEASUREMENTID"]
     };
-    this.app = initializeApp(this.firebaseConfig);
-    this.firestore = getFirestore(this.app)
+    initializeApp({credential: cert(this.firebaseConfig),});
+    this.firestore = getFirestore();
   }
 }
 
