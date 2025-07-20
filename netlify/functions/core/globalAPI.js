@@ -111,7 +111,7 @@ export class UzumAPI extends API {
       method: "GET",
       headers: this.defaultHeaders
     });
-    if (!res.ok) throw new Error("Failed to fetch invoice");
+    if (!res.ok) return null;
     return await res.json();
   }
 
@@ -121,7 +121,7 @@ export class UzumAPI extends API {
       method: "GET",
       headers: this.defaultHeaders
     });
-    if (!res.ok) throw new Error("Failed to fetch invoice by ID");
+    if (!res.ok) return null;
     return await res.json();
   }
 
@@ -134,7 +134,7 @@ export class UzumAPI extends API {
         method: "GET",
         headers: this.defaultHeaders
       });
-      if (!res.ok) throw new Error("Failed to fetch invoices");
+      if (!res.ok) return null;
       const data = await res.json();
       if (data && data.length > 0) {
         result = result.concat(data);
@@ -152,7 +152,7 @@ export class UzumAPI extends API {
       method: "GET",
       headers: this.defaultHeaders
     });
-    if (!res.ok) throw new Error("Failed to fetch returns");
+    if (!res.ok) return null;
     return await res.json();
   }
 
@@ -165,7 +165,7 @@ export class UzumAPI extends API {
         method: "GET",
         headers: this.defaultHeaders
       });
-      if (!res.ok) throw new Error("Failed to fetch returns");
+      if (!res.ok) return null
       const data = await res.json();
       if (data && data.length > 0) {
         result = result.concat(data);
@@ -183,7 +183,7 @@ export class UzumAPI extends API {
       method: "GET",
       headers: this.defaultHeaders
     });
-    if (!res.ok) throw new Error("Failed to fetch return");
+    if (!res.ok) return null;
     return await res.json();
   }
 
