@@ -40,7 +40,7 @@ export class FirebaseAPI extends API {
 
   async getUser(userId) {
     const userDoc = await this.firestore.collection("users").doc(userId).get();
-    if (userDoc.exists()) {
+    if (userDoc.exists) {
       return userDoc.data();
     } else {
       return null;
