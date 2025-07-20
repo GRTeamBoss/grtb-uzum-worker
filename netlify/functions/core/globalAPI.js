@@ -1,10 +1,16 @@
-import { initializeApp, cert } from "firebase-admin/app"
+import { initializeApp, cert, getApps } from "firebase-admin/app"
 import { getFirestore, collection, addDoc, getDoc, updateDoc, deleteDoc, doc, setDoc } from "firebase-admin/firestore"
 
 
 class API {
 
   constructor() {
+  }
+}
+
+export class FirebaseAPI extends API {
+  constructor() {
+    super()
     this.firebaseConfig = {
       apiKey: process.env["FIREBASE_APIKEY"],
       authDomain: process.env["FIREBASE_AUTHDOMAIN"],
@@ -27,15 +33,12 @@ class API {
       client_x509_cert_url: process.env["FIREBASE_CLIENT_CERT_URL"],
       universe_domain: process.env["FIREBASE_UNIVERSE_DOMAIN"]
     };
-    initializeApp({credential: cert(this.serviceAccount)}, appName="uzum-webapp-telegram-bot");
-    // this.app = initializeApp(this.firebaseConfig);
+    if (!getApps().length) {
+      initializeApp({credential: cert(this.serviceAccount),});
+    } else {
+      initializeApp()
+    }
     this.firestore = getFirestore();
-  }
-}
-
-export class FirebaseAPI extends API {
-  constructor() {
-    super()
   }
 
   async getUser(userId) {
