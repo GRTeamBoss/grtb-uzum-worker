@@ -78,53 +78,6 @@ export class UzumAPIFBSv2 extends UzumAPIv2 {
   }
 }
 
-export class UzumAPIFBSOrderv1 extends UzumAPIFBSv1 {
-
-  constructor(token) {
-    super(token);
-    this.baseUrl = this.baseUrlv1;
-  }
-
-  async getOrders(shopId) {
-    let content = 'FBS Order Details:\n\n';
-    const url = `${this.baseUrl}/fbs/order?shopIds=${shopId}&status=CREATED`;
-    const res = await fetch(url, {
-      method: "GET",
-      headers: this.defaultHeaders
-    });
-    if (!res.ok) return null;
-    res = await res.json();
-    if (!res.payload || res.payload.orders.length === 0) {
-      return "No orders found.";
-    }
-    for (const order of res.payload.orders) {
-      content += `Order ID: ${order.id}\nOrder Status: ${order.status}\nOrder Date: ${order.dateCreated}\nOrder Price: ${order.price}\n\n`;
-      for (const item of order.orderItems) {
-        content += `Product ID: ${item.productId}\nSKU Title: ${item.skuTitle}\nProduct Color: ${item.productImage.color}\nProduct Price: ${item.sellerPrice}\nClient Price: ${item.purchasePrice}\nAmount: ${item.amount}\n\n`;
-      }
-      content += "--------------------\n\n"
-    }
-    return content || "No order details found.";
-  }
-
-  async getOrderById(orderId) {
-    let content = 'FBS Order Details:\n\n';
-    const url = `${this.baseUrl}/fbs/order/${orderId}`;
-    const res = await fetch(url, {
-      method: "GET",
-      headers: this.defaultHeaders
-    });
-    if (!res.ok) return null;
-    res = await res.json();
-    if (!res.payload) return "Order not found.";
-    content += `Order ID: ${res.payload.id}\nOrder Status: ${res.payload.status}\nOrder Date: ${res.payload.dateCreated}\nOrder Price: ${res.payload.price}\n\n`;
-    for (const item of res.payload.orderItems) {
-      content += `Product ID: ${item.productId}\nSKU Title: ${item.skuTitle}\nProduct Color: ${item.productImage.color}\nProduct Price: ${item.sellerPrice}\nClient Price: ${item.purchasePrice}\nAmount: ${item.amount}\n\n`;
-    }
-    return content || "No order details found.";
-  }
-}
-
 export class UzumAPIShopv1 extends UzumAPIv1 {
 
   constructor(token) {

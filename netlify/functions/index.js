@@ -1,7 +1,7 @@
 import { Telegraf } from "telegraf"
 
 import { FirebaseAPI } from "./core/firebaseAPI.js"
-import { UzumAPIShopv1, UzumAPIInvoicev1, UzumAPIDBSv2, UzumAPIFBSv2, UzumAPIFBSOrderv1 } from "./core/uzumAPI.js"
+import { UzumAPIShopv1, UzumAPIInvoicev1, UzumAPIDBSv2, UzumAPIFBSv2 } from "./core/uzumAPI.js"
 
 
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN
@@ -105,21 +105,6 @@ bot.command("orders", async ctx => {
     } else {
       const orders = await new UzumAPIFBSv2(UzumAPIToken).getOrders(shopId)
       await ctx.reply(orders)
-    }
-  }
-})
-
-bot.command("order", async ctx => {
-  const orderId = ctx.message.text.split(" ")[1]
-  const UzumAPIToken = await firebaseAPI.getUser(ctx.message.chat.id.toString()).then(user => user.uzumApiToken)
-  if (!UzumAPIToken) {
-    await ctx.reply("Please set your Uzum API token using the /api command.")
-  } else {
-    if (!orderId) {
-      await ctx.reply("Usage: `/order <order_id>` for specific order.")
-    } else {
-      const order = await new UzumAPIFBSOrderv1(UzumAPIToken).getOrderById(orderId)
-      await ctx.reply(order)
     }
   }
 })
