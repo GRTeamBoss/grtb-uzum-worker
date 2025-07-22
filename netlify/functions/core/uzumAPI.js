@@ -127,7 +127,11 @@ export class UzumAPIInvoicev1 extends UzumAPIv1 {
       headers: this.defaultHeaders
     });
     if (!res.ok) return null;
-    for (const invoice of await res.json()) {
+    res = await res.json();
+    if (res.length === 0) {
+      return "No invoice details found.";
+    }
+    for (const invoice of res) {
       content += `Invoice ID: ${invoice.id}\nInvoice Date: ${invoice.dateCreated}\nTotal Accepted: ${invoice.totalAccepted}\n\n`;
     }
     return content || "No invoice details found.";
@@ -165,6 +169,9 @@ export class UzumAPIInvoicev1 extends UzumAPIv1 {
     });
     if (!res.ok) return null;
     res = await res.json();
+    if (res.length === 0) {
+      return "No return details found.";
+    }
     for (const item of res) {
       content += `Return ID: ${item.id}\nReturn Date: ${item.dateCreated}\nTotal Amount: ${item.totalAmount}\n\n`;
     }
