@@ -1,6 +1,5 @@
 class UzumAPI {
   constructor(token) {
-    super();
     this.token = token || null;
     this.baseUrlv1 = "https://api-seller.uzum.uz/api/seller-openapi/v1";
     this.baseUrlv2 = "https://api-seller.uzum.uz/api/seller-openapi/v2";
