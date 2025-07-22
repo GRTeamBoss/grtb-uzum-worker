@@ -53,7 +53,7 @@ bot.command("invoice", async ctx => {
     await ctx.reply("Please set your Uzum API token using the /api command.")
   } else {
     if (!invoiceId) {
-      await ctx.reply("Get invoice only first page. Usage: `/invoice all` for all invoices or `/invoice <invoice_id>` for specific invoice.")
+      await ctx.reply("Get invoice only first page. Usage: `/invoice all` for all invoices.")
       const invoices = await new UzumAPIInvoicev1(UzumAPIToken).getInvoice()
       await ctx.reply(invoices)
     } else if (invoiceId.toLowerCase() === "all") {
@@ -72,7 +72,7 @@ bot.command("returned", async ctx => {
     await ctx.reply("Please set your Uzum API token using the /api command.")
   } else {
     if (!returnId) {
-      await ctx.reply("Get return only first page. Usage: `/returned all` for all returns or `/returned <return_id>` for specific return.")
+      await ctx.reply("Get return only first page. Usage: `/returned all` for all returns.")
       const returns = await new UzumAPIInvoicev1(UzumAPIToken).getReturn()
       await ctx.reply(returns)
     } else if (returnId.toLowerCase() === "all") {
