@@ -5,7 +5,6 @@ import { getFirestore, collection, addDoc, getDoc, updateDoc, deleteDoc, doc, se
 
 export class FirebaseAPI{
   constructor() {
-    super()
     this.firebaseConfig = {
       apiKey: process.env["FIREBASE_APIKEY"],
       authDomain: process.env["FIREBASE_AUTHDOMAIN"],
