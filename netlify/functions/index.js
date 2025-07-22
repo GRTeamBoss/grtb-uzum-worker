@@ -1,6 +1,7 @@
 import { Telegraf } from "telegraf"
 
-import { FirebaseAPI, UzumAPI } from "./core/globalAPI.js"
+import { FirebaseAPI } from "./core/firebaseAPI.js"
+import { UzumAPIShopv1, UzumAPIInvoicev1, UzumAPIDBSv2, UzumAPIFBSv2, UzumAPIFBSOrderv1 } from "./core/uzumAPI.js"
 
 
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN
@@ -31,12 +32,18 @@ bot.start(async ctx => {
 
 bot.command("api", async ctx => {
   await ctx.reply("Analyzing API token...")
-  await firebaseAPI.updateUser(ctx.message.chat.id.toString(), {
-    uzumApiToken: ctx.message.text.split(" ")[1] || ""
-  })
-  await ctx.reply("Saved!")
-  await ctx.reply("You can now use the bot to manage your Uzum API tokens and access the dashboard.")
-  await ctx.reply("Login to the dashboard at https://uzumdashboard.netlify.app via" + "\n" + "Login: " + ctx.message.chat.id + "\n" + "Password: " + ctx.message.text.split(" ")[1])
+  const UzumShopID = await new UzumAPIShopv1(ctx.message.text.split(" ")[1]).getShopIds()
+  if (!UzumShopID) {
+    await ctx.reply("Invalid API token. Please check your token and try again.")
+  } else {
+    await firebaseAPI.updateUser(ctx.message.chat.id.toString(), {
+      uzumApiToken: ctx.message.text.split(" ")[1] || "",
+      uzumShopId: UzumShopID[0] || ""
+    })
+    await ctx.reply("Saved!")
+    await ctx.reply("You can now use the bot to manage your Uzum API tokens and access the dashboard.")
+    await ctx.reply("Login to the dashboard at https://uzumdashboard.netlify.app via" + "\n" + "Login: " + ctx.message.chat.id + "\n" + "Password: " + ctx.message.text.split(" ")[1])
+  }
 })
 
 bot.command("invoice", async ctx => {
@@ -47,26 +54,13 @@ bot.command("invoice", async ctx => {
   } else {
     if (!invoiceId) {
       await ctx.reply("Get invoice only first page. Usage: `/invoice all` for all invoices or `/invoice <invoice_id>` for specific invoice.")
-      const invoices = await new UzumAPI(UzumAPIToken).getInvoice()
-      if (!invoices || invoices.length === 0) {
-        await ctx.reply("No invoices found.")
-      } else {
-        await ctx.reply("Invoices found:\n" + JSON.stringify(invoices, null, 2))
-      }
+      const invoices = await new UzumAPIInvoicev1(UzumAPIToken).getInvoice()
+      await ctx.reply(invoices)
     } else if (invoiceId.toLowerCase() === "all") {
-      const invoices = await new UzumAPI(UzumAPIToken).getAllInvoices()
-      if (!invoices || invoices.length === 0) {
-        await ctx.reply("No invoices found.")
-      } else {
-        await ctx.reply("Invoices found:\n" + JSON.stringify(invoices, null, 2))
-      }
-    } else if (Number.isInteger(Number(invoiceId))) {
-      const invoice = await new UzumAPI(UzumAPIToken).getInvoiceById(invoiceId)
-      if (!invoice) {
-        await ctx.reply("Invoice not found.")
-      } else {
-        await ctx.reply("Invoice details:\n" + JSON.stringify(invoice, null, 2))
-      }
+      const invoices = await new UzumAPIInvoicev1(UzumAPIToken).getAllInvoices()
+      await ctx.reply(invoices)
+    } else {
+      await ctx.reply("command options are invalid. Usage: `/invoice all` for all invoices or `/invoice`")
     }
   }
 })
@@ -79,30 +73,56 @@ bot.command("returned", async ctx => {
   } else {
     if (!returnId) {
       await ctx.reply("Get return only first page. Usage: `/returned all` for all returns or `/returned <return_id>` for specific return.")
-      const returns = await new UzumAPI(UzumAPIToken).getReturn()
-      if (!returns || returns.length === 0) {
-        await ctx.reply("No returns found.")
-      } else {
-        await ctx.reply("Returns found:\n" + JSON.stringify(returns, null, 2))
-      }
+      const returns = await new UzumAPIInvoicev1(UzumAPIToken).getReturn()
+      await ctx.reply(returns)
     } else if (returnId.toLowerCase() === "all") {
-      const returns = await new UzumAPI(UzumAPIToken).getAllReturns()
-      if (!returns || returns.length === 0) {
-        await ctx.reply("No returns found.")
-      } else {
-        await ctx.reply("Returns found:\n" + JSON.stringify(returns, null, 2))
-      }
-    } else if (Number.isInteger(Number(returnId))) {
-      const returned = await new UzumAPI(UzumAPIToken).getReturnById(returnId)
-      if (!returned) {
-        await ctx.reply("Return not found.")
-      } else {
-        await ctx.reply("Return details:\n" + JSON.stringify(returned, null, 2))
-      }
+      const returns = await new UzumAPIInvoicev1(UzumAPIToken).getAllReturns()
+      await ctx.reply(returns)
+    } else {
+      await ctx.reply("command options are invalid. Usage: `/returned all` for all returns or `/returned`")
     }
   }
 })
 
+bot.command("sku", async ctx => {
+  const UzumAPIToken = await firebaseAPI.getUser(ctx.message.chat.id.toString()).then(user => user.uzumApiToken)
+  if (!UzumAPIToken) {
+    await ctx.reply("Please set your Uzum API token using the /api command.")
+  } else {
+    const skus = await new UzumAPIDBSv2(UzumAPIToken).getSKUstock()
+    await ctx.reply(skus)
+  }
+})
+
+bot.command("orders", async ctx => {
+  const UzumAPIToken = await firebaseAPI.getUser(ctx.message.chat.id.toString()).then(user => user.uzumApiToken)
+  if (!UzumAPIToken) {
+    await ctx.reply("Please set your Uzum API token using the /api command.")
+  } else {
+    const shopId = await firebaseAPI.getUser(ctx.message.chat.id.toString()).then(user => user.uzumShopId)
+    if (!shopId) {
+      await ctx.reply("Please create a shop for using this command.")
+    } else {
+      const orders = await new UzumAPIFBSv2(UzumAPIToken).getOrders(shopId)
+      await ctx.reply(orders)
+    }
+  }
+})
+
+bot.command("order", async ctx => {
+  const orderId = ctx.message.text.split(" ")[1]
+  const UzumAPIToken = await firebaseAPI.getUser(ctx.message.chat.id.toString()).then(user => user.uzumApiToken)
+  if (!UzumAPIToken) {
+    await ctx.reply("Please set your Uzum API token using the /api command.")
+  } else {
+    if (!orderId) {
+      await ctx.reply("Usage: `/order <order_id>` for specific order.")
+    } else {
+      const order = await new UzumAPIFBSOrderv1(UzumAPIToken).getOrderById(orderId)
+      await ctx.reply(order)
+    }
+  }
+})
 
 exports.handler = async function(event, context) {
   await bot.handleUpdate(JSON.parse(event.body))
