@@ -38,11 +38,11 @@ export class UzumAPIDBSv2 extends UzumAPIv2 {
       headers: this.defaultHeaders
     });
     if (!res.ok) return null;
-    res = await res.json();
-    if (res.payload.skuAmountList.length === 0) {
+    const data = await res.json();
+    if (data.payload.skuAmountList.length === 0) {
       return "You haven't added any SKU stocks yet.";
     } else {
-      for (const sku of res.payload.skuAmountList) {
+      for (const sku of data.payload.skuAmountList) {
         content += `SKU ID: ${sku.skuId}\nSKU Title: ${sku.skuTitle}\nProduct Title: ${sku.productTitle}\nStock: ${sku.amount}\n\n`;
       }
     }
@@ -62,12 +62,12 @@ export class UzumAPIFBSv2 extends UzumAPIv2 {
       method: "GET",
       headers: this.defaultHeaders
     });
-    if (!res.ok) return null; 
-    res = await res.json();
-    if (!res.payload || res.payload.orders.length === 0) {
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data.payload || data.payload.orders.length === 0) {
       return "No orders found.";
     }
-    for (const order of res.payload.orders) {
+    for (const order of data.payload.orders) {
       content += `Order ID: ${order.id}\nOrder Status: ${order.status}\nOrder Date: ${order.dateCreated}\nOrder Price: ${order.price}\n\n`;
       for (const item of order.orderItems) {
         content += `Product ID: ${item.productId}\nSKU Title: ${item.skuTitle}\nProduct Color: ${item.productImage.color}\nProduct Price: ${item.sellerPrice}\nClient Price: ${item.purchasePrice}\nAmount: ${item.amount}\n\n`;
@@ -92,7 +92,11 @@ export class UzumAPIShopv1 extends UzumAPIv1 {
       headers: this.defaultHeaders
     });
     if (!res.ok) return "No shop details found.";
-    for (const shop of await res.json()) {
+    const data = await res.json();
+    if (data.length === 0) {
+      return "No shop details found.";
+    }
+    for (const shop of data) {
       content += `Shop ID: ${shop.id}\nShop Name: ${shop.name}\n\n`;
     }
     return content || "No shop details found.";
@@ -106,7 +110,8 @@ export class UzumAPIShopv1 extends UzumAPIv1 {
       headers: this.defaultHeaders
     });
     if (!res.ok) return null;
-    for (const shop of await res.json()) {
+    const data = await res.json();
+    for (const shop of data) {
       content.push(shop.id);
     }
     return content.length > 0 ? content : null;
@@ -127,11 +132,11 @@ export class UzumAPIInvoicev1 extends UzumAPIv1 {
       headers: this.defaultHeaders
     });
     if (!res.ok) return null;
-    res = await res.json();
-    if (res.length === 0) {
+    const data = await res.json();
+    if (data.length === 0) {
       return "No invoice details found.";
     }
-    for (const invoice of res) {
+    for (const invoice of data) {
       content += `Invoice ID: ${invoice.id}\nInvoice Date: ${invoice.dateCreated}\nTotal Accepted: ${invoice.totalAccepted}\n\n`;
     }
     return content || "No invoice details found.";
@@ -168,11 +173,11 @@ export class UzumAPIInvoicev1 extends UzumAPIv1 {
       headers: this.defaultHeaders
     });
     if (!res.ok) return null;
-    res = await res.json();
-    if (res.length === 0) {
+    const data = await res.json();
+    if (data.length === 0) {
       return "No return details found.";
     }
-    for (const item of res) {
+    for (const item of data) {
       content += `Return ID: ${item.id}\nReturn Date: ${item.dateCreated}\nTotal Amount: ${item.totalAmount}\n\n`;
     }
     return content || "No return details found.";
