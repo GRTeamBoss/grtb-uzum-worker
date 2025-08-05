@@ -1,7 +1,7 @@
 import { Telegraf } from "telegraf"
 
 import { FirebaseAPI } from "./core/firebaseAPI.js"
-import { UzumAPIShopv1, UzumAPIInvoicev1, UzumAPIDBSv2, UzumAPIFBSv2 } from "./core/uzumAPI.js"
+import { UzumDBS, UzumFBSv1, UzumFBSv2, UzumFinance, UzumInvoice, UzumProduct, UzumShop } from "./core/uzumAPI.js"
 
 
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN
@@ -53,14 +53,11 @@ bot.command("invoice", async ctx => {
     await ctx.reply("Please set your Uzum API token using the /api command.")
   } else {
     if (!invoiceId) {
-      await ctx.reply("Get invoice only first page. Usage: `/invoice all` for all invoices.")
-      const invoices = await new UzumAPIInvoicev1(UzumAPIToken).getInvoice()
-      await ctx.reply(invoices)
-    } else if (invoiceId.toLowerCase() === "all") {
-      const invoices = await new UzumAPIInvoicev1(UzumAPIToken).getAllInvoices()
+      await ctx.reply("Get invoice only first page.")
+      const invoices = await new UzumInvoice(UzumAPIToken).getInvoice()
       await ctx.reply(invoices)
     } else {
-      await ctx.reply("command options are invalid. Usage: `/invoice all` for all invoices or `/invoice`")
+      await ctx.reply("command options are invalid. Usage: `/invoice`")
     }
   }
 })
@@ -72,14 +69,11 @@ bot.command("returned", async ctx => {
     await ctx.reply("Please set your Uzum API token using the /api command.")
   } else {
     if (!returnId) {
-      await ctx.reply("Get return only first page. Usage: `/returned all` for all returns.")
-      const returns = await new UzumAPIInvoicev1(UzumAPIToken).getReturn()
-      await ctx.reply(returns)
-    } else if (returnId.toLowerCase() === "all") {
-      const returns = await new UzumAPIInvoicev1(UzumAPIToken).getAllReturns()
+      await ctx.reply("Get return only first page.")
+      const returns = await new UzumInvoice(UzumAPIToken).getReturn()
       await ctx.reply(returns)
     } else {
-      await ctx.reply("command options are invalid. Usage: `/returned all` for all returns or `/returned`")
+      await ctx.reply("command options are invalid. Usage: `/returned`")
     }
   }
 })
@@ -89,7 +83,7 @@ bot.command("sku", async ctx => {
   if (!UzumAPIToken) {
     await ctx.reply("Please set your Uzum API token using the /api command.")
   } else {
-    const skus = await new UzumAPIDBSv2(UzumAPIToken).getSKUstock()
+    const skus = await new UzumDBS(UzumAPIToken).getSKUstock()
     await ctx.reply(skus)
   }
 })
@@ -103,7 +97,7 @@ bot.command("orders", async ctx => {
     if (!shopId) {
       await ctx.reply("Please create a shop for using this command.")
     } else {
-      const orders = await new UzumAPIFBSv2(UzumAPIToken).getOrders(shopId)
+      const orders = await new UzumFBSv2(UzumAPIToken).getOrders(shopId)
       await ctx.reply(orders)
     }
   }
